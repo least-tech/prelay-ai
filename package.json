@@ -1,0 +1,19 @@
+{
+  "name": "relay-workflows",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": "24.22.3"},
+  "scripts": {
+    "lint": "node scripts/check.mjs lint",
+    "typecheck": "node scripts/check.mjs typecheck",
+    "test": "node --test",
+    "test:live-ai": "node --env-file-if-exists=.env scripts/live-ai.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node --env-file-if-exists=.env dist/src/server.mjs",
+    "dev": "node --env-file-if-exists=.env src/server.mjs",
+    "migrate": "node --env-file-if-exists=.env scripts/admin.mjs migrate",
+    "bootstrap": "node --env-file-if-exists=.env scripts/admin.mjs bootstrap",
+    "seed": "node --env-file-if-exists=.env scripts/admin.mjs seed"
+  }
+}
