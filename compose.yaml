@@ -1,0 +1,40 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      APP_ORIGIN: https://${DEPLOY_DOMAIN:?Set DEPLOY_DOMAIN in .env}
+      APP_NAME: ${APP_NAME:-Relay}
+      AUDIT_PUBLIC_SIGNUP: ${AUDIT_PUBLIC_SIGNUP:-0}
+      BOOTSTRAP_ON_START: ${BOOTSTRAP_ON_START:-0}
+      BOOTSTRAP_EMAIL: ${BOOTSTRAP_EMAIL:-}
+      BOOTSTRAP_PASSWORD: ${BOOTSTRAP_PASSWORD:-}
+      BOOTSTRAP_WORKSPACE: ${BOOTSTRAP_WORKSPACE:-}
+      BOOTSTRAP_AUDIT_TESTER: ${BOOTSTRAP_AUDIT_TESTER:-0}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_MONTHLY_PRICE: ${STRIPE_MONTHLY_PRICE:-}
+      STRIPE_ANNUAL_PRICE: ${STRIPE_ANNUAL_PRICE:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+    volumes:
+      - app-data:/data
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      DEPLOY_DOMAIN: ${DEPLOY_DOMAIN:?Set DEPLOY_DOMAIN in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  app-data:
+  caddy-data:
+  caddy-config:
